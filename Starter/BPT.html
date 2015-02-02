@@ -2,12 +2,6 @@
 <head>
 <title>标准溶液配制</title>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-<script>
-var R = /linux/i; R.compile(R);
-if (!R.test(navigator.platform)){
-    document.write("Linux Only!");
-}
-</script>
 </head>
 <body>
 <table>
@@ -44,6 +38,12 @@ oSvD.onchange = oRvD.onchange = function(){
             oRv.value = vRv / oRvD.value;
             break;
     }
+}
+</script>
+<script>
+var R = /linux/i; R.compile(R);
+if (!R.test(navigator.platform)){
+    document.write("Linux Only!");
 }
 </script>
 </body>
