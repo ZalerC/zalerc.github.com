@@ -43,7 +43,7 @@ oSvD.onchange = oRvD.onchange = function(){
 <script>
 var R = /linux/i; R.compile(R);
 if (!R.test(navigator.platform)){
-    document.write("Linux Only!");
+    document.body.innerHTML = "Linux Only!";
 }
 </script>
 </body>
