@@ -1,0 +1,3 @@
+# chrome:flash播放器出现 Error #2048 或其他类似问题
+可能是由于插件https everywhere的Adobe规则引起的，去除即解决。
+
