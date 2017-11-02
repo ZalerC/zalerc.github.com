@@ -5,5 +5,5 @@
     -   0.2.0
     -   https://github.com/mayswind/AriaNg
 -   YAAW
-    -   2017/08/10
+    -   2017/11/02
     -   https://github.com/binux/yaaw
