@@ -2,8 +2,8 @@
 
 -   Static
 -   AriaNg
-    -   0.4.0
-    -   2018/05/10
+    -   1.0.3
+    -   2019/04/19
     -   https://github.com/mayswind/AriaNg
 -   YAAW
     -   2017/11/02
