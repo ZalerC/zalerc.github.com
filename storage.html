@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>storage</title>
+    </head>
+    <body>
+        <textarea id="show"></textarea>
+        <script>
+            let url = prompt('url');
+            fetch(url, {
+                mode: 'no-cors'
+            }).then(function(response) {
+                document.querySelector('#show').value = response.text();
+            })
+        </script>
+    </body>
+</html>
