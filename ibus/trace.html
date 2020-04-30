@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="referrer" content="no-referrer">	
+		<title>IBus Web</title>
+		<link rel="stylesheet" type="text/css" href="style/bootstrap.min.css">
+		<script type="text/javascript" src="library/jquery.min.js"></script>
+		<script type="text/javascript" src="library/bootstrap.min.js"></script>
+		<script type="text/javascript" src="library/crypto-js.js"></script>
+		<script type="text/javascript" src="library/nbbus.js"></script>
+		<script type="text/javascript" src="library/template.js"></script>
+	</head>
+	<body>
+		<!-- nav -->
+		<nav class="navbar navbar-dark bg-dark fixed-top">
+			<span class="navbar-brand">公交追踪
+				<small><kbd class="small" id="message" 
+					name="message" pre-render="text" render="text">{message}</kbd></small>
+			</span>
+			<div class="justify-content-right text-white">
+				<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal"
+					onclick="GFn.modal('#find-line-modal');">线路</button>
+				<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modal"
+					onclick="GFn.modal('#find-station-modal');">车站</button>
+				<button type="button" class="btn btn-info" onclick="GFn.refresh();">刷新</button>
+			</div>
+		</nav>
+		<!-- info -->
+		<div class="container-fluid" id="display" style="margin-top:64px;"></div>
+		<!-- modal -->
+		<div class="modal fade" id="modal">
+			<div class="modal-dialog modal-lg" style="margin-top:64px;">
+	  			<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title" name="title">{title}</h4>
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+					</div>
+					<div class="modal-body" name="body">{body}</div>
+					<div class="modal-footer" name="footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- templates[hidden] -->
+		<div id="templates" hidden>
+			<!-- template:find-station-modal -->
+			<div id="find-station-modal">
+				<div name="title">查询车站</div>
+				<div name="body">
+					<form>
+						<div class="input-group">
+							<div class="input-group-prepend">
+							  	<span class="input-group-text">车站名称</span>
+							</div>
+							<input type="text" class="form-control" name="input" placeholder="车站名称(模糊)">
+							<div class="input-group-append">
+								<button type="button" class="btn btn-info"
+									onclick="GFn.findStation('#find-station-modal');">查询</button>
+							</div>
+						</div>
+						<div class="input-group" name="result" style="margin:10px;"></div>
+					</form>					  
+				</div>
+				<div name="item">
+					<button type="button" class="btn btn-outline-primary btn-sm" data-dismiss="modal"
+						name="station-name" pre-render="text value" style="margin:5px;"
+						onclick="GFn.addStation($(this).val(), '#station-card');">{station-name}</button>
+				</div>
+			</div>
+			<!-- template:find-line-modal -->
+			<div id="find-line-modal">
+    			<div name="title">查询线路</div>
+    			<div name="body">
+					<form>
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<span class="input-group-text">线路名称</span>
+							</div>
+							<input type="text" class="form-control" name="input" placeholder="线路名称(模糊)">
+							<div class="input-group-append">
+								<button type="button" class="btn btn-info"
+									onclick="GFn.findLine('#find-line-modal');">查询</button>
+							</div>
+						</div>
+						<div class="input-group" name="result" style="margin:10px;"></div>
+					</form>			
+				</div>
+				<div name="item">
+					<button type="button" class="btn btn-outline-primary btn-sm" data-dismiss="modal"
+						name="line-name" pre-render="text value" render-value="${line-id}" style="margin:5px;"
+						onclick="GFn.modal('#line-stations-modal', {'line-name':$(this).text(),'line-id':$(this).val()}, GFn.findLineStations);">{line-name}</button>
+				</div>
+			</div>
+			<!-- template:line-stations-modal -->
+			<div id="line-stations-modal">
+				<div name="title">
+					<span name="line-name" pre-render="text">{line-name}</span>
+					<button type="button" class="btn btn-outline-secondary btn-sm" style="margin-left:5px;"
+						onclick="GFn.reverseLineStations('#line-stations-modal');">反向</button>
+				</div>
+				<div name="body">
+					<input type="text" name="line-name" pre-render="value" disabled hidden/>
+					<input type="text" name="line-id" pre-render="value" disabled hidden/>
+					<input type="text" name="line-flag" value="1" disabled hidden/>
+					<div class="input-group" name="result" style="margin:10px;"></div>
+				</div>
+				<div name="item">
+					<button type="button" class="btn btn-outline-primary btn-sm" data-dismiss="modal" style="margin:5px;"
+						name="station-name" pre-render="text value" render-text="[${station-rank}]${station-name}"
+						onclick="GFn.addLine($('#modal input[name=\'line-name\']').val(),$('#modal input[name=\'line-id\']').val(),$('#modal input[name=\'line-flag\']').val(),$(this).val(),'#line-item','#station-card');">{station-name}</button>
+				</div>
+			</div>
+			<!-- template:station-lines-modal -->
+			<div id="station-lines-modal">
+				<div name="title">
+					<span name="station-name" pre-render="text">{station-name}</span>
+				</div>
+				<div name="body">
+					<input type="text" name="station-name" pre-render="value" disabled hidden/>
+					<div class="input-group" name="result" style="margin:5px;"></div>
+				</div>
+				<div name="item">
+					<button type="button" class="btn btn-outline-primary btn-sm" data-dismiss="modal" style="margin:5px;"
+						name="line-name" pre-render="text value line-id line-flag station-name"
+						render-text="${line-name}[${start-station-name} -> ${end-station-name}]"
+						render-line-id="${line-id}" render-line-flag="${line-flag}" render-station-name="${station-name}"
+						onclick="GFn.addLine($(this).val(),$(this).attr('line-id'),$(this).attr('line-flag'),$(this).attr('station-name'),'#line-item','#station-card');">{line-name}</button>
+				</div>
+			</div>
+			<!-- template:station -->
+			<div id="station-card">
+				<div class="card" name="station" style="margin-top:10px;margin-bottom:10px;">
+					<input type="text" name="station-name" pre-render="value code" disabled hidden/>
+					<div class="card-header d-flex">
+						<div class="flex-grow-1">
+							🚏&nbsp;<span name="station-name" pre-render="text">{station-name}</span>
+						</div>
+						<div class="justify-content-right">
+							<button type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#modal"
+								onclick="GFn.modal('#station-lines-modal', {'station-name':$(this).parents('div[name=\'station\']').find('input[name=\'station-name\']').val()}, GFn.findStationLines);">+线路</button>
+							<button type="button" class="btn btn-sm btn-danger"
+								onclick="$(this).parents('div[name=\'station\']').remove();">移除</button>
+						</div>
+					</div>
+					<div class="card-body" style="padding:5px;">
+						<ul class="list-group" name="lines"></ul>
+					</div>
+				</div>
+			</div>
+			<!-- template:line -->
+			<div id="line-item">
+				<li class="list-group-item border-0" name="line" style="padding:10px;padding-top:5px;padding-bottom:0px;">
+					<input type="text" name="line-name" pre-render="value code"  render-code="${line-id}${line-flag}" disabled hidden/>
+					<input type="text" name="line-id" pre-render="value" disabled hidden/>
+					<input type="text" name="line-flag" pre-render="value" disabled hidden/>
+					<input type="text" name="station-name" pre-render="value" disabled hidden/>
+					<input type="text" name="station-id" pre-render="value" disabled hidden/>
+					<input type="text" name="station-rank" pre-render="value" disabled hidden/>
+					<div class="d-flex align-items-stretch">
+						<div class="col-4 bg-light rounded-left rounded-top" style="margin-top:5px;">
+							🚌&nbsp;<span name="line-name" pre-render="text">{line-name}</span>
+							<small><small>
+								<small pre-render="text" render-text="${start-station-name} -> ${end-station-name}">{start -> end}</small>
+							</small></small>
+						</div>
+						<div class="flex-grow-1 flex-column">
+							<div name="vehicle" style="margin-left:10px;"
+								render="html">{vehicle}</div>
+							<div class="progress" style="width:99%;height:4px;margin-top:3px;">
+								<div class="progress-bar progress-bar-striped progress-bar-animated" style="width:100%;"
+									name="progress" render="style" render-style="width:${progress}%;"></div>
+							</div>
+						</div>
+						<button type="button" class="btn btn-sm btn-danger"
+							onclick="$(this).parents('li[name=\'line\']').remove();">移除</button>
+					</div>
+				</li>
+			</div>
+		</div>
+
+		<!-- script:main -->
+		<script type="text/javascript" src="library/main.trace.js"></script>
+	</body>
+</html>
