@@ -7,3 +7,6 @@
 [submodule "ariang"]
 	path = ariang
 	url = https://github.com/ZalerC/zalerc.github.com.git
+[submodule "yaaw"]
+	path = yaaw
+	url = https://github.com/ZalerC/zalerc.github.com.git
