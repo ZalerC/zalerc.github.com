@@ -4,3 +4,6 @@
 [submodule "yacd"]
 	path = yacd
 	url = https://github.com/ZalerC/zalerc.github.com.git
+[submodule "ariang"]
+	path = ariang
+	url = https://github.com/ZalerC/zalerc.github.com.git
