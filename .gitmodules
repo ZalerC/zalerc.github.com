@@ -1,3 +1,6 @@
 [submodule "clash"]
 	path = clash
 	url = https://github.com/ZalerC/zalerc.github.com.git
+[submodule "yacd"]
+	path = yacd
+	url = https://github.com/ZalerC/zalerc.github.com.git
