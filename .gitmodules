@@ -10,7 +10,3 @@
 [submodule "yaaw"]
 	path = yaaw
 	url = https://github.com/ZalerC/zalerc.github.com.git
-[submodule "docs/pysciter"]
-	path = docs/pysciter
-	url = https://github.com/ZalerC/zalerc.github.com.git
-	branch = extends/docs/pysciter
